@@ -1,3 +1,5 @@
-# Nest
+## 我的nest学习记录
 
-Nest新课学习
+参考资料 `3R/course`、 `yf/nestjs`
+
+
