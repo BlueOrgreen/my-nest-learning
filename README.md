@@ -2,4 +2,5 @@
 
 参考资料 `3R/course`、 `yf/nestjs`
 
+**nodea版本为: 18**
 

@@ -23,6 +23,7 @@ export class PostController {
         @Query()
         options: PaginateOptions,
     ) {
+        console.log('posts get');
         return this.service.paginate(options);
     }
 
