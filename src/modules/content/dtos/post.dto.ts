@@ -21,6 +21,7 @@ import { toBoolean } from '@/modules/core/helpers';
 import { PaginateOptions } from '@/modules/database/types';
 
 import { PostOrderType } from '../constants';
+import { DtoValidation } from '@/modules/core/decorators';
 
 /**
  * 文章分页查询验证
@@ -30,6 +31,7 @@ import { PostOrderType } from '../constants';
 以及当前页面，每页数据量限制等字段的时候需要的是布尔值，整型等其它数据类型，这时候我们可以通过
 class-transformer导出的Transform装饰器来定义转译函数
 */
+@DtoValidation({ type: 'query' })
 export class QueryPostDto implements PaginateOptions {
     @Transform(({ value }) => toBoolean(value))
     @IsBoolean()
@@ -66,7 +68,7 @@ export class QueryPostDto implements PaginateOptions {
 /**
  * 文章创建验证
  */
-// @DtoValidation({ groups: ['create'] })
+@DtoValidation({ groups: ['create'] })
 export class CreatePostDto {
     @MaxLength(255, {
         always: true,
@@ -131,11 +133,9 @@ export class CreatePostDto {
 /**
  * 文章更新验证
  */
+@DtoValidation({ groups: ['update'] })
 export class UpdatePostDto extends PartialType(CreatePostDto) {
     @IsUUID(undefined, { groups: ['update'], message: '文章ID格式错误' })
     @IsDefined({ groups: ['update'], message: '文章ID必须指定' })
     id: string;
 }
-
-// src/modules/content/dtos/index.ts
-export * from './post.dto';

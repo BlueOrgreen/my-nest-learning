@@ -8,15 +8,13 @@ import {
     Patch,
     Post,
     Query,
-    UseInterceptors,
-    ValidationPipe,
+    // UseInterceptors,
     SerializeOptions,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto, QueryPostDto } from '../dtos/post.dto';
-import { AppIntercepter } from '@/modules/core/providers/app.interceptor';
 
-@UseInterceptors(AppIntercepter)
+// @UseInterceptors(AppIntercepter)
 @Controller('posts')
 export class PostController {
     constructor(protected service: PostService) {}
@@ -24,15 +22,7 @@ export class PostController {
     @Get()
     @SerializeOptions({ groups: ['post-list'] })
     async list(
-        @Query(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: { target: false },
-            }),
-        )
+        @Query()
         options: QueryPostDto,
     ) {
         console.log('获取文章列表', options);
@@ -51,16 +41,7 @@ export class PostController {
     @Post()
     @SerializeOptions({ groups: ['post-detail'] })
     async store(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: { target: false },
-                groups: ['create'],
-            }),
-        )
+        @Body()
         data: CreatePostDto,
     ) {
         console.log('创建文章', data);

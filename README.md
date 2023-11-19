@@ -4,6 +4,9 @@
 
 **nodea版本为: 18**
 
+- main 分支为主分支 沿着课程往下学
+- content 分支为内容分支 主要整合了 controller、service、entity、respository
+
 
 ### 数据的验证和序列化
 
