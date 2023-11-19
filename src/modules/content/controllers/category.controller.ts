@@ -1,3 +1,4 @@
+import { AppIntercepter } from '@/modules/core/providers/app.interceptor';
 import {
     Body,
     Controller,
@@ -12,17 +13,23 @@ import {
     ValidationPipe,
     SerializeOptions,
 } from '@nestjs/common';
-import { PostService } from '../services/post.service';
-import { CreatePostDto, QueryPostDto } from '../dtos/post.dto';
-import { AppIntercepter } from '@/modules/core/providers/app.interceptor';
+import { CategoryService } from '../services';
+import { CreateCategoryDto, QueryCategoryDto, UpdateCategoryDto } from '../dtos';
+
 
 @UseInterceptors(AppIntercepter)
-@Controller('posts')
-export class PostController {
-    constructor(protected service: PostService) {}
+@Controller('categories')
+export class CategoryController {
+    constructor(protected service: CategoryService) {}
+
+    @Get('tree')
+    @SerializeOptions({ groups: ['category-tree'] })
+    async tree() {
+        return this.service.findTrees();
+    }
 
     @Get()
-    @SerializeOptions({ groups: ['post-list'] })
+    @SerializeOptions({ groups: ['category-list'] })
     async list(
         @Query(
             new ValidationPipe({
@@ -33,14 +40,13 @@ export class PostController {
                 validationError: { target: false },
             }),
         )
-        options: QueryPostDto,
+        options: QueryCategoryDto,
     ) {
-        console.log('获取文章列表', options);
         return this.service.paginate(options);
     }
 
     @Get(':id')
-    @SerializeOptions({ groups: ['post-detail'] })
+    @SerializeOptions({ groups: ['category-detail'] })
     async detail(
         @Param('id', new ParseUUIDPipe())
         id: string,
@@ -49,7 +55,7 @@ export class PostController {
     }
 
     @Post()
-    @SerializeOptions({ groups: ['post-detail'] })
+    @SerializeOptions({ groups: ['category-detail'] })
     async store(
         @Body(
             new ValidationPipe({
@@ -61,34 +67,36 @@ export class PostController {
                 groups: ['create'],
             }),
         )
-        data: CreatePostDto,
+        data: CreateCategoryDto,
     ) {
-        console.log('创建文章', data);
         return this.service.create(data);
     }
 
     @Patch()
-    @SerializeOptions({ groups: ['post-detail'] })
+    @SerializeOptions({ groups: ['category-detail'] })
     async update(
-        @Body()
-        data: Record<string, any>,
+        @Body(
+            new ValidationPipe({
+                transform: true,
+                whitelist: true,
+                forbidNonWhitelisted: true,
+                forbidUnknownValues: true,
+                validationError: { target: false },
+                groups: ['update'],
+            }),
+        )
+        data: UpdateCategoryDto,
     ) {
         return this.service.update(data);
     }
 
     @Delete(':id')
-    @SerializeOptions({ groups: ['post-list'] })
+    @SerializeOptions({ groups: ['category-detail'] })
     async delete(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.service.delete(id);
     }
-
-    // @Patch('restore')
-    // @SerializeOptions({ groups: ['post-list'] })
-    // async restore(
-    //     @Body()
-    //     data: RestoreDto,
-    // ) {
-    //     const { ids } = data;
-    //     return this.service.restore(ids);
-    // }
 }
+
+
+
+

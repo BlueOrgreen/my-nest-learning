@@ -14,7 +14,7 @@ export const database = (): TypeOrmModuleOptions => ({
     // database: '3r',
     // 以下为sqlite配置
     type: 'better-sqlite3',
-    database: resolve(__dirname, '../../back/database3.db'),
+    database: resolve(__dirname, '../../back/database6.db'),
     synchronize: true,
     autoLoadEntities: true,
 });
