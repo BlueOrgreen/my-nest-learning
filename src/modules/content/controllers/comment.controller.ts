@@ -4,8 +4,8 @@ import {
     Controller,
     Delete,
     Get,
-    Param,
-    ParseUUIDPipe,
+    // Param,
+    // ParseUUIDPipe,
     // Patch,
     Post,
     Query,
@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { CommentService } from '../services';
 import { CreateCommentDto, QueryCommentDto } from '../dtos';
+import { DeleteDto } from '@/modules/restful/dtos';
 
 
 // @UseInterceptors(AppIntercepter)
@@ -57,15 +58,7 @@ export class CommentController {
     @Post()
     @SerializeOptions({ groups: ['comment-detail'] })
     async store(
-        @Body(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: { target: false },
-            }),
-        )
+        @Body()
         data: CreateCommentDto,
     ) {
         return this.service.create(data);
@@ -73,7 +66,11 @@ export class CommentController {
 
     @Delete(':id')
     @SerializeOptions({ groups: ['comment-detail'] })
-    async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.service.delete(id);
+    async delete(
+        @Body()
+        data: DeleteDto,
+    ) {
+        const { ids } = data;
+        return this.service.delete(ids);
     }
 }

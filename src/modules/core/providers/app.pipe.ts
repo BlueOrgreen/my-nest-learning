@@ -18,17 +18,17 @@ import { deepMerge } from '../helpers';
 export class AppPipe extends ValidationPipe {
     async transform(value: any, metadata: ArgumentMetadata) {
         const { metatype, type } = metadata;
-        console.log('metadata', metadata);
+        // console.log('metadata', metadata);
         // 获取要验证的dto类
         const dto = metatype as any;
+        // console.log('dto', dto);
         // 获取dto类的装饰器元数据中的自定义验证选项
         const options = Reflect.getMetadata(DTO_VALIDATION_OPTIONS, dto) || {};
-        console.log('options', options);
+        console.log('AppPipe options', options);
         // 把当前已设置的选项解构到备份对象
         const originOptions = { ...this.validatorOptions };
         // 把当前已设置的class-transform选项解构到备份对象
         const originTransform = { ...this.transformOptions };
-        console.log('originOptions', originOptions, 'originTransform', originTransform, 'value', value);
         // 把自定义的class-transform和type选项解构出来
         const { transformOptions, type: optionsType, ...customOptions } = options;
         // 根据DTO类上设置的type来设置当前的DTO请求类型,默认为'body'

@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { EntityNotFoundError, In, IsNull, Not, SelectQueryBuilder } from 'typeorm';
 import { CategoryRespository, PostRepository, TagRepository } from '../repositories';
-import { PaginateOptions, QueryHook } from '../../database/types';
+import { QueryHook } from '../../database/types';
 import { PostEntity } from '../entities';
 import { PostOrderType } from '../constants';
 import { isArray, isFunction, isNil, omit } from 'lodash';
 import { paginate } from '@/modules/database/helpers';
 import { CategoryService } from './category.service';
-import { CreatePostDto } from '../dtos';
+import { CreatePostDto, QueryPostDto } from '../dtos';
+import { SelectTrashMode } from '@/modules/database/constants';
 
 
 @Injectable()
@@ -24,7 +25,7 @@ export class PostService {
      * @param options 分页选项
      * @param callback 添加额外的查询
      */
-    async paginate(options: PaginateOptions, callback?: QueryHook<PostEntity>) {
+    async paginate(options: QueryPostDto, callback?: QueryHook<PostEntity>) {
         const qb = await this.buildListQuery(this.repository.buildBaseQB(), options, callback);
         return paginate(qb, options);
     }
@@ -84,11 +85,42 @@ export class PostService {
 
     /**
      * 删除文章
-     * @param id
+     * @param ids[]
      */
-    async delete(id: string) {
-        const item = await this.repository.findOneByOrFail({ id });
-        return this.repository.remove(item);
+    async delete(ids: string[], trash?: boolean) {
+        const items = await this.repository.find({
+            where: { id: In(ids) } as any,
+            withDeleted: true,
+        });
+        if (trash) {
+            // 对已软删除的数据再次删除时直接通过remove方法从数据库中清除
+            const directs = items.filter((item) => !isNil(item.deletedAt));
+            const softs = items.filter((item) => isNil(item.deletedAt));
+            return [
+                ...(await this.repository.remove(directs)),
+                ...(await this.repository.softRemove(softs)),
+            ];
+        }
+        return this.repository.remove(items);
+    }
+
+    /**
+     * 恢复文章
+     * @param ids
+     */
+    async restore(ids: string[]) {
+        const items = await this.repository.find({
+            where: { id: In(ids) },
+            withDeleted: true
+        });
+         // 过滤掉不在回收站中的数据
+         const trasheds = items.filter((item) => !isNil(item)).map((item) => item.id);
+         if (trasheds.length < 1) return [];
+         await this.repository.restore(trasheds);
+         const qb = await this.buildListQuery(this.repository.buildBaseQB(), {}, async (qbuilder) =>
+             qbuilder.andWhereInIds(trasheds),
+         );
+         return qb.getMany();
     }
 
     /**
@@ -102,14 +134,19 @@ export class PostService {
         options: Record<string, any>,
         callback?: QueryHook<PostEntity>,
     ) {
-        const { category, orderBy, isPublished, tag } = options;
-        let newQb = qb;
+        const { category, orderBy, isPublished, tag, trashed = SelectTrashMode.NONE } = options;
+        // 是否查询回收站
+        if (trashed === SelectTrashMode.ALL || SelectTrashMode.ONLY) {
+            qb.withDeleted();
+            if (trashed === SelectTrashMode.ONLY) qb.where(`post.deletedAt is not null`);
+        }
+        
         if (typeof isPublished === 'boolean') {
-            newQb = isPublished
-                ? newQb.where({
+            isPublished
+                ? qb.where({
                       publishedAt: Not(IsNull()),
                   })
-                : newQb.where({
+                : qb.where({
                       publishedAt: IsNull(),
                   });
         }
@@ -118,7 +155,7 @@ export class PostService {
         // 查询某个标签关联的文章
         if (tag) qb.where('tags.id = :id', { id: tag });
         if (callback) return callback(qb);
-        return newQb;
+        return qb;
     }
 
     /**

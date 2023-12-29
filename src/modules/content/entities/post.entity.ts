@@ -1,8 +1,9 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import {
     BaseEntity,
     Column,
     CreateDateColumn,
+    DeleteDateColumn,
     // DeleteDateColumn,
     Entity,
     JoinTable,
@@ -81,6 +82,12 @@ export class PostEntity extends BaseEntity {
     })
     updatedAt: Date;
 
+    /**
+     * 通过queryBuilder生成的评论数量(虚拟字段)
+     */
+    @Expose()
+    commentCount: number;
+
     @Expose()
     @ManyToOne(() => CategoryEntity, (category) => category.posts, {
         nullable: true,
@@ -99,4 +106,11 @@ export class PostEntity extends BaseEntity {
         cascade: true
     })
     comments: Relation<CommentEntity>[]
+
+    @Expose()
+    @Type(() => Date)
+    @DeleteDateColumn({
+        comment: '删除时间',
+    })
+    deletedAt: Date;
 }

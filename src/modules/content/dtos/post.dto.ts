@@ -22,6 +22,7 @@ import { PaginateOptions } from '@/modules/database/types';
 
 import { PostOrderType } from '../constants';
 import { DtoValidation } from '@/modules/core/decorators';
+import { SelectTrashMode } from '@/modules/database/constants';
 
 /**
  * 文章分页查询验证
@@ -63,6 +64,10 @@ export class QueryPostDto implements PaginateOptions {
     @IsUUID(undefined, { message: 'ID格式错误' })
     @IsOptional()
     tag?: string;
+
+    @IsEnum(SelectTrashMode)
+    @IsOptional()
+    trashed?: SelectTrashMode;
 }
 
 /**
@@ -118,14 +123,14 @@ export class CreatePostDto {
         message: 'ID格式不正确',
     })
     @IsOptional({ groups: ['update'] })
+    @IsNotEmpty({ groups: ['create'], message: '分类必须设置' })
     category: string;
 
     @IsUUID(undefined, {
         each: true,
         always: true,
-        message: 'ID格式不正确',
+        message: 'ID1格式不正确',
     })
-    @IsNotEmpty({ groups: ['create'], message: '分类必须设置' })
     @IsOptional({ always: true })
     tags?: string[];
 }

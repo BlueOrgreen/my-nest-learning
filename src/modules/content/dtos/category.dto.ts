@@ -4,6 +4,7 @@ import { PartialType } from '@nestjs/swagger';
 import { toNumber } from 'lodash';
 import {
     IsDefined,
+    IsEnum,
     // IsEnum,
     IsNotEmpty,
     IsNumber,
@@ -13,8 +14,24 @@ import {
     Min,
     ValidateIf,
 } from 'class-validator';
+import { DtoValidation } from "@/modules/core/decorators";
+import { SelectTrashMode } from "@/modules/database/constants";
 
-export class QueryCategoryDto implements PaginateOptions {
+/**
+ * 树形分类查询验证
+ */
+@DtoValidation({ type: 'query' })
+export class QueryCategoryTreeDto {
+    @IsEnum(SelectTrashMode)
+    @IsOptional()
+    trashed?: SelectTrashMode;
+}
+
+/**
+ * 分类分页查询验证
+ */
+@DtoValidation({ type: 'query' })
+export class QueryCategoryDto extends QueryCategoryTreeDto implements PaginateOptions {
     @Transform(({ value }) => toNumber(value))
     @Min(1, { message: '当前页必须大于1' })
     @IsNumber()
@@ -31,6 +48,7 @@ export class QueryCategoryDto implements PaginateOptions {
 /**
  * 分类新增验证
  */
+@DtoValidation({ groups: ['create'] })
 export class CreateCategoryDto {
     @MaxLength(25, {
         always: true,

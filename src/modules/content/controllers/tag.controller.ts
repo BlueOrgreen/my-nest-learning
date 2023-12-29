@@ -13,7 +13,8 @@ import {
     SerializeOptions,
 } from '@nestjs/common';
 import { TagService } from '../services';
-import { CreateTagDto, QueryCategoryDto, UpdateTagDto } from '../dtos';
+import { CreateTagDto, QueryTagDto, UpdateTagDto } from '../dtos';
+import { DeleteWithTrashDto, RestoreDto } from '@/modules/restful/dtos';
 
 // @UseInterceptors(AppIntercepter)
 @Controller('tags')
@@ -21,18 +22,10 @@ export class TagController {
     constructor(protected service: TagService) {}
 
     @Get()
-    @SerializeOptions({})
+    @SerializeOptions({ groups: ['tag-list'] })
     async list(
-        @Query(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-                forbidNonWhitelisted: true,
-                forbidUnknownValues: true,
-                validationError: { target: false },
-            }),
-        )
-        options: QueryCategoryDto,
+        @Query()
+        options: QueryTagDto,
     ) {
         return this.service.paginate(options);
     }
@@ -82,9 +75,23 @@ export class TagController {
         return this.service.update(data);
     }
 
-    @Delete(':id')
-    @SerializeOptions({})
-    async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.service.delete(id);
+    @Delete()
+    @SerializeOptions({ groups: ['tag-list'] })
+    async delete(
+        @Body()
+        data: DeleteWithTrashDto
+    ) {
+        const { ids, trash } = data;
+        return this.service.delete(ids, trash);
+    }
+
+    @Patch('restore')
+    @SerializeOptions({ groups: ['tag-list'] })
+    async restore(
+        @Body()
+        data: RestoreDto
+    ) {
+        const { ids } = data;
+        return this.service.restore(ids);
     }
 }

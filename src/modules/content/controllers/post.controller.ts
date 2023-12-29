@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto, QueryPostDto } from '../dtos/post.dto';
+import { DeleteWithTrashDto, RestoreDto } from '@/modules/restful/dtos';
 
 // @UseInterceptors(AppIntercepter)
 @Controller('posts')
@@ -25,7 +26,6 @@ export class PostController {
         @Query()
         options: QueryPostDto,
     ) {
-        console.log('获取文章列表', options);
         return this.service.paginate(options);
     }
 
@@ -44,7 +44,6 @@ export class PostController {
         @Body()
         data: CreatePostDto,
     ) {
-        console.log('创建文章', data);
         return this.service.create(data);
     }
 
@@ -57,19 +56,23 @@ export class PostController {
         return this.service.update(data);
     }
 
-    @Delete(':id')
+    @Delete()
     @SerializeOptions({ groups: ['post-list'] })
-    async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.service.delete(id);
+    async delete(
+        @Body()
+        data: DeleteWithTrashDto,
+    ) {
+        const { ids, trash } = data;
+        return this.service.delete(ids, trash);
     }
 
-    // @Patch('restore')
-    // @SerializeOptions({ groups: ['post-list'] })
-    // async restore(
-    //     @Body()
-    //     data: RestoreDto,
-    // ) {
-    //     const { ids } = data;
-    //     return this.service.restore(ids);
-    // }
+    @Patch('restore')
+    @SerializeOptions({ groups: ['post-list'] })
+    async restore(
+        @Body()
+        data: RestoreDto,
+    ) {
+        const { ids } = data;
+        return this.service.restore(ids);
+    }
 }

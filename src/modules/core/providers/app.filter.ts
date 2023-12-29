@@ -14,7 +14,6 @@ export class AppFilter<T = Error> extends BaseExceptionFilter<T> {
         { class: EntityPropertyNotFoundError, status: HttpStatus.BAD_REQUEST },
     ];
 
-    // eslint-disable-next-line consistent-return
     catch(exception: T, host: ArgumentsHost) {
         const applicationRef =
             this.applicationRef || (this.httpAdapterHost && this.httpAdapterHost.httpAdapter)!;
