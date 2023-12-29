@@ -10,8 +10,8 @@ export const database = (): TypeOrmModuleOptions => ({
     host: '127.0.0.1',
     port: 3306,
     username: 'root',
-    password: 'root',
-    database: '3r',
+    password: '12345678',
+    database: 'my-nest-learning',
     // 以下为sqlite配置
     // type: 'better-sqlite3',
     // database: resolve(__dirname, '../../back/database6.db'),

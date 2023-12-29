@@ -43,13 +43,7 @@ export class CommentController {
     @Get()
     @SerializeOptions({ groups: ['comment-list'] })
     async list(
-        @Query(
-            new ValidationPipe({
-                transform: true,
-                forbidUnknownValues: true,
-                validationError: { target: false },
-            }),
-        )
+        @Query()
         query: QueryCommentDto,
     ) {
         return this.service.paginate(query);

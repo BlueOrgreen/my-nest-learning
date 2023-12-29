@@ -24,7 +24,6 @@ export class AppPipe extends ValidationPipe {
         // console.log('dto', dto);
         // 获取dto类的装饰器元数据中的自定义验证选项
         const options = Reflect.getMetadata(DTO_VALIDATION_OPTIONS, dto) || {};
-        console.log('AppPipe options', options);
         // 把当前已设置的选项解构到备份对象
         const originOptions = { ...this.validatorOptions };
         // 把当前已设置的class-transform选项解构到备份对象
