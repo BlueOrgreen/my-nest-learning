@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryColumn, CreateDateColumn, ManyToOne, Relation, Tree, TreeParent, TreeChildren } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryColumn, CreateDateColumn, ManyToOne, Relation, Tree, TreeParent, TreeChildren, Index } from 'typeorm';
 import { PostEntity } from './post.entity';
 import { Exclude, Expose } from 'class-transformer';
 
@@ -12,6 +12,7 @@ export class CommentEntity extends BaseEntity {
 
     @Expose()
     @Column({ comment: '评论内容', type: 'text' })
+    @Index({ fulltext: true })
     body: string;
   
     @Expose()

@@ -3,7 +3,7 @@ import {
     Column,
     DeleteDateColumn,
     Entity,
-    // Index,
+    Index,
     ManyToMany,
     PrimaryColumn,
     Relation,
@@ -20,6 +20,7 @@ export class TagEntity {
 
     @Expose()
     @Column({ comment: '分类名称' })
+    @Index({ fulltext: true })
     name: string;
 
     @Expose()

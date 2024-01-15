@@ -4,12 +4,13 @@ import { CategoryRespository, PostRepository, TagRepository } from '../repositor
 import { QueryHook } from '../../database/types';
 import { PostEntity } from '../entities';
 import { PostOrderType } from '../constants';
-import { isArray, isFunction, isNil, omit } from 'lodash';
+import { isArray, isFunction, isNil, omit, pick } from 'lodash';
 import { paginate } from '@/modules/database/helpers';
 import { CategoryService } from './category.service';
-import { CreatePostDto, QueryPostDto } from '../dtos';
+import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';
 import { SelectTrashMode } from '@/modules/database/constants';
 import { SearchType } from '../types';
+import { SearchService } from './search.service';
 
 
 @Injectable()
@@ -19,6 +20,7 @@ export class PostService {
         protected categoryRepository: CategoryRespository,
         protected categoryService: CategoryService,
         protected tagRepository: TagRepository,
+        protected searchService?: SearchService,
         protected search_type: SearchType = 'against',
     ) {}
 
@@ -28,6 +30,12 @@ export class PostService {
      * @param callback 添加额外的查询
      */
     async paginate(options: QueryPostDto, callback?: QueryHook<PostEntity>) {
+        if (!isNil(this.searchService) && !isNil(options.search) && this.search_type === 'meilli') {
+            return this.searchService.search(
+                options.search,
+                pick(options, ['trashed', 'page', 'limit'])
+            )
+        }
         const qb = await this.buildListQuery(this.repository.buildBaseQB(), options, callback);
         return paginate(qb, options);
     }
@@ -71,6 +79,8 @@ export class PostService {
                 : [],
             };
         const item = await this.repository.save(createPostDto);
+        if (!isNil(this.searchService)) await this.searchService.create(item);
+
         return this.detail(item.id);
     }
 
@@ -79,9 +89,28 @@ export class PostService {
      * 更新文章
      * @param data
      */
-    async update(data: Record<string, any>) {
-        await this.repository.update(data.id, omit(data, ['id']));
-        return this.detail(data.id);
+    async update(data: UpdatePostDto) {
+        const post = await this.detail(data.id);
+        // 更新分类
+        if (data.category !== undefined) {
+            const category = isNil(data.category)
+                ? null
+                : await this.categoryRepository.findOneByOrFail({ id: data.category });
+                post.category = category;
+                await this.repository.save(post)
+        }
+        if (isArray(data.tags)) {
+            // 更新文章关联标签
+            await this.repository
+                .createQueryBuilder('post')
+                .relation(PostEntity, 'tags')
+                .of(post)
+                .addAndRemove(data.tags, post.tags ?? []);
+        }
+        await this.repository.update(data.id, omit(data, ['id', 'tags', 'category']));
+        const result = await this.detail(data.id);
+        if (!isNil(this.searchService)) await this.searchService.update([post]);
+        return result;
     }
 
 
@@ -94,16 +123,26 @@ export class PostService {
             where: { id: In(ids) } as any,
             withDeleted: true,
         });
+        let result: PostEntity[] = [];
         if (trash) {
             // 对已软删除的数据再次删除时直接通过remove方法从数据库中清除
             const directs = items.filter((item) => !isNil(item.deletedAt));
             const softs = items.filter((item) => isNil(item.deletedAt));
-            return [
+            result = [
                 ...(await this.repository.remove(directs)),
                 ...(await this.repository.softRemove(softs)),
             ];
+            if (!isNil(this.searchService)) {
+                await this.searchService.delete(directs.map(({ id }) => id));
+                await this.searchService.update(softs);
+            }
+        } else {
+            result = await this.repository.remove(items);
+            if (!isNil(this.searchService)) {
+                await this.searchService.delete(result.map(({ id }) => id));
+            }
         }
-        return this.repository.remove(items);
+        return result;
     }
 
     /**

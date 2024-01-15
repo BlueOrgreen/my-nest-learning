@@ -12,7 +12,7 @@ import {
     SerializeOptions,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
-import { CreatePostDto, QueryPostDto } from '../dtos/post.dto';
+import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos/post.dto';
 import { DeleteWithTrashDto, RestoreDto } from '@/modules/restful/dtos';
 
 // @UseInterceptors(AppIntercepter)
@@ -51,7 +51,7 @@ export class PostController {
     @SerializeOptions({ groups: ['post-detail'] })
     async update(
         @Body()
-        data: Record<string, any>,
+        data: UpdatePostDto,
     ) {
         return this.service.update(data);
     }

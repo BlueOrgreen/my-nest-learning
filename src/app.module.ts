@@ -2,7 +2,7 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './modules/database/database.module';
 import { CoreModule } from './modules/core/core.module';
-import { database, meilli } from './config';
+import { content, database, meilli } from './config';
 import { AppFilter, AppIntercepter, AppPipe } from './modules/core/providers';
 import { ContentModule } from './modules/content/content.module';
 import { MeilliModule } from './modules/meilisearch/melli.module';
@@ -10,7 +10,7 @@ import { MeilliModule } from './modules/meilisearch/melli.module';
 
 @Module({
     imports: [
-        ContentModule.forRoot(),
+        ContentModule.forRoot(content),
         CoreModule.forRoot(),
         DatabaseModule.forRoot(database),
         MeilliModule.forRoot(meilli),

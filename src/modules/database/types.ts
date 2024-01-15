@@ -114,3 +114,4 @@ export type RepositoryType<E extends ObjectLiteral> =
     | TreeRepository<E>
     | BaseRepository<E>
     | BaseTreeRepository<E>;
+

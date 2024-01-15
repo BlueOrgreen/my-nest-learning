@@ -147,6 +147,9 @@ export class CreatePostDto {
  */
 @DtoValidation({ groups: ['update'] })
 export class UpdatePostDto extends PartialType(CreatePostDto) {
+    /**
+     * 待更新ID
+     */
     @IsUUID(undefined, { groups: ['update'], message: '文章ID格式错误' })
     @IsDefined({ groups: ['update'], message: '文章ID必须指定' })
     id: string;

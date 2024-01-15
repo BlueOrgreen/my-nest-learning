@@ -1,5 +1,5 @@
 // src/modules/content/entities/category.entity.ts
-import { BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, Relation, Tree, TreeChildren, TreeParent } from 'typeorm';
+import { BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, Relation, Tree, TreeChildren, TreeParent, Index } from 'typeorm';
 import { PostEntity } from './post.entity';
 import { Exclude, Expose, Type } from 'class-transformer';
 
@@ -13,6 +13,7 @@ export class CategoryEntity extends BaseEntity {
 
     @Expose()
     @Column({ comment: '分类名称' })
+    @Index({ fulltext: true })
     name: string;
 
     @Expose({ groups: ['category-tree', 'category-list', 'category-detail'] })

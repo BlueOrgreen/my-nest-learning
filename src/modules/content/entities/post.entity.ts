@@ -10,7 +10,7 @@ import {
     ManyToMany,
     ManyToOne,
     OneToMany,
-    // Index,
+    Index,
     // JoinTable,
     // ManyToMany,
     // ManyToOne,
@@ -34,14 +34,18 @@ export class PostEntity extends BaseEntity {
 
     @Expose()
     @Column({ comment: '文章标题' })
+    @Index({ fulltext: true })
     title: string;
 
     @Expose({ groups: ['post-detail'] })
     @Column({ comment: '文章内容', type: 'text' })
+    @Index({ fulltext: true })
     body: string;
 
+    // 修改PostEntity以支持against关键字的全文搜索，为需要支持全文搜索功能的字段添加上@Index({ fulltext: true })索引
     @Expose()
     @Column({ comment: '文章描述', nullable: true })
+    @Index({ fulltext: true })
     summary?: string;
 
     @Expose()

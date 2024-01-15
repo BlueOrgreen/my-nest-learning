@@ -1,6 +1,6 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from '../database/database.module';
-import { DynamicModule, Module, ModuleMetadata } from '@nestjs/common'
+import { DynamicModule, ModuleMetadata } from '@nestjs/common'
 import * as controllers from './controllers';
 import * as entities from './entities';
 import * as repositories from './repositories';
@@ -36,23 +36,27 @@ export class ContentModule {
                     repositories.CategoryRespository,
                     services.CategoryService,
                     repositories.TagRepository,
+                    { token: services.SearchService, optional: true }
                 ],
                 useFactory(
                     postRepository: repositories.PostRepository,
                     categoryRepository: repositories.CategoryRespository,
                     categoryService: services.CategoryService,
                     tagRepository: repositories.TagRepository,
+                    searchService: services.SearchService
                 ) {
                     return new PostService(
                         postRepository,
                         categoryRepository,
                         categoryService,
                         tagRepository,
+                        searchService,
                         config.searchType,
                     );
                 },
             }
         ];
+        if (config.searchType === 'meilli') providers.push(services.SearchService);
 
         return {
             module: ContentModule,
