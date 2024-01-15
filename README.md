@@ -49,3 +49,25 @@ nest的代码组织是以`Module`为单位的, 使用多个模块来组织代码
 - 多对多关联时，关联的一侧(比如这里的PostEntity的tags)必须加上@JoinTable装饰器
 - 一对多关联时(反向关联为多对一)，两侧都不需要加任何东西,比如这里的PostEntity和TagEntity，PostEntity和CommentEntity
 - 一对一关联时(本节课没用到)，关联的一侧必须要加上@JoinColumn装饰器
+
+
+
+
+
+
+### 对课程代码执行数据迁移并初始化
+
+```shell
+pnpm cli dbmr
+pnpm cli dbs -i
+
+访问 http://127.0.0.1:3100/api/docs-json
+将该url导入 Insomnia 中
+点击collection 即可看到 接口文档已经导入
+
+设置 Base Environment 添加变量
+{
+    "base_url": "http://127.0.0.1:3100"
+    "bearerToken": "xxx"
+}
+```
