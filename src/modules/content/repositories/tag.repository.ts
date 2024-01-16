@@ -1,10 +1,12 @@
 import { CustomRepository } from '@/modules/database/decorators';
 
 import { PostEntity, TagEntity } from '../entities';
-import { Repository } from 'typeorm';
+import { BaseRepository } from '@/modules/database/base';
 
 @CustomRepository(TagEntity)
-export class TagRepository extends Repository<TagEntity> {
+export class TagRepository extends BaseRepository<TagEntity> {
+    protected _qbName = 'tag';
+
     buildBaseQB() {
         return this.createQueryBuilder('tag')
             .leftJoinAndSelect('tag.posts', 'posts')

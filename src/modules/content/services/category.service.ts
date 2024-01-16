@@ -6,11 +6,14 @@ import { treePaginate } from "@/modules/database/helpers";
 import { CategoryEntity } from "../entities";
 import { isNil, omit } from "lodash";
 import { SelectTrashMode } from "@/modules/database/constants";
+import { BaseService } from "@/modules/database/base";
 
 
 @Injectable()
-export class CategoryService {
-    constructor(protected repository: CategoryRespository) {}
+export class CategoryService extends BaseService<CategoryEntity, CategoryRespository> {
+    constructor(protected repository: CategoryRespository) {
+        super(repository);
+    }
 
     /**
      * 查询分类树
