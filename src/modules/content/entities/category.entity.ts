@@ -1,5 +1,6 @@
 // src/modules/content/entities/category.entity.ts
-import { BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, Relation, Tree, TreeChildren, TreeParent, Index } from 'typeorm';
+import { BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, Tree, TreeChildren, TreeParent, Index } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { PostEntity } from './post.entity';
 import { Exclude, Expose, Type } from 'class-transformer';
 

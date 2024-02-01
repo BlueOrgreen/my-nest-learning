@@ -1,5 +1,5 @@
 import { DynamicModule, Module } from "@nestjs/common";
-import { MelliConfig } from "./types";
+import type { MelliConfig } from "./types";
 import { MeilliService } from "./meilli.service";
 import { createMeilliOptions } from "./helpers";
 

@@ -1,6 +1,7 @@
-import { BaseEntity, Column, Entity, PrimaryColumn, CreateDateColumn, ManyToOne, Relation, Tree, TreeParent, TreeChildren, Index } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryColumn, CreateDateColumn, ManyToOne, Tree, TreeParent, TreeChildren, Index } from 'typeorm';
 import { PostEntity } from './post.entity';
 import { Exclude, Expose } from 'class-transformer';
+import type { Relation } from 'typeorm';
 
 @Exclude()
 @Tree('materialized-path')

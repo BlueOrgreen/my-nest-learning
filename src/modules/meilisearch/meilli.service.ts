@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { MelliConfig } from "./types";
+import type { MelliConfig } from "./types";
 import MeiliSearch from "meilisearch";
 import { isNil } from "lodash";
 

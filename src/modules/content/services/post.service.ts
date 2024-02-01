@@ -9,7 +9,7 @@ import { paginate } from '@/modules/database/helpers';
 import { CategoryService } from './category.service';
 import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';
 import { SelectTrashMode } from '@/modules/database/constants';
-import { SearchType } from '../types';
+import type { SearchType } from '../types';
 import { SearchService } from './search.service';
 
 

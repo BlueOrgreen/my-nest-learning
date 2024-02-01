@@ -16,10 +16,9 @@ import {
     // ManyToOne,
     // OneToMany,
     PrimaryColumn,
-    Relation,
-    // Relation,
     UpdateDateColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { PostBodyType } from '../constants';
 import { CategoryEntity } from './category.entity';
 import { TagEntity } from './tag.entity';

@@ -1,0 +1,9 @@
+
+{
+    "$schema": "https://json.schemastore.org/swcrc",
+    "sourceMaps": true,
+    "module": {
+        "type": "commonjs",
+        "ignoreDynamic": true
+    }
+}
