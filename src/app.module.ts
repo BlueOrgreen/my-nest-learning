@@ -1,12 +1,12 @@
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from './modules/database/database.module';
-import { CoreModule } from './modules/core/core.module';
-import { content, database, meilli } from './config';
-import { AppFilter, AppIntercepter, AppPipe } from './modules/core/providers';
-import { ContentModule } from './modules/content/content.module';
-import { MeilliModule } from './modules/meilisearch/melli.module';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
+import { content, database, meilli } from './config';
+import { ContentModule } from './modules/content/content.module';
+import { CoreModule } from './modules/core/core.module';
+import { AppFilter, AppIntercepter, AppPipe } from './modules/core/providers';
+import { DatabaseModule } from './modules/database/database.module';
+import { MeilliModule } from './modules/meilisearch/melli.module';
 
 @Module({
     imports: [
@@ -33,7 +33,7 @@ import { MeilliModule } from './modules/meilisearch/melli.module';
         {
             provide: APP_FILTER,
             useClass: AppFilter,
-        }
+        },
     ],
 })
 export class AppModule {}

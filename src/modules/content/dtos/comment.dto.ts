@@ -1,13 +1,25 @@
 import { PickType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsDefined, IsNotEmpty, IsNumber, IsOptional, IsUUID, MaxLength, Min, ValidateIf } from 'class-validator';
-import { PaginateOptions } from '@/modules/database/types';
+import {
+    IsDefined,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsUUID,
+    MaxLength,
+    Min,
+    ValidateIf,
+} from 'class-validator';
+
 import { toNumber } from 'lodash';
+
+import { PaginateOptions } from '@/modules/database/types';
 
 export class QueryCommentDto implements PaginateOptions {
     @IsUUID(undefined, { message: 'ID格式错误' })
     @IsOptional()
-    post?: string
+    post?: string;
+
     @Transform(({ value }) => toNumber(value))
     @Min(1, { message: '当前页必须大于1' })
     @IsNumber()

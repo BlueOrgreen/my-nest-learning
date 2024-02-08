@@ -1,7 +1,20 @@
-import { BaseEntity, Column, Entity, PrimaryColumn, CreateDateColumn, ManyToOne, Tree, TreeParent, TreeChildren, Index } from 'typeorm';
-import { PostEntity } from './post.entity';
 import { Exclude, Expose } from 'class-transformer';
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    PrimaryColumn,
+    CreateDateColumn,
+    ManyToOne,
+    Tree,
+    TreeParent,
+    TreeChildren,
+    Index,
+} from 'typeorm';
+
 import type { Relation } from 'typeorm';
+
+import { PostEntity } from './post.entity';
 
 @Exclude()
 @Tree('materialized-path')
@@ -15,21 +28,20 @@ export class CommentEntity extends BaseEntity {
     @Column({ comment: '评论内容', type: 'text' })
     @Index({ fulltext: true })
     body: string;
-  
+
     @Expose()
     @CreateDateColumn({
         comment: '创建时间',
     })
     createdAt: Date;
 
-    
     @Expose({ groups: ['comment-list'] })
     depth = 0;
-    
+
     @Expose({ groups: ['comment-detail', 'comment-list'] })
     @TreeParent({ onDelete: 'CASCADE' })
     parent: Relation<CommentEntity> | null;
-    
+
     @Expose({ groups: ['comment-tree'] })
     @TreeChildren({ cascade: true })
     children: Relation<CommentEntity>[];

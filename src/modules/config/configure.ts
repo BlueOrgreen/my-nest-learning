@@ -1,8 +1,10 @@
-import { isAsyncFn, deepMerge } from "../core/helpers";
-import { Env } from "./env";
-import { Storage } from "./storage";
-import { ConfigStorageOption, ConfigureFactory, ConfigureRegister } from "./types";
-import { get, has, isFunction, isNil, isObject, set } from 'lodash';
+import { get, has, isFunction, isNil, isObject, omit, set } from 'lodash';
+
+import { isAsyncFn, deepMerge } from '../core/helpers';
+
+import { Env } from './env';
+import { Storage } from './storage';
+import { ConfigStorageOption, ConfigureFactory, ConfigureRegister } from './types';
 
 /**
  * 设置配置的存储选项
@@ -26,22 +28,27 @@ export class Configure {
      * 配置是否被初始化
      */
     protected inited = false;
+
     /**
      * 配置构建函数对象
      */
     protected factories: Record<string, ConfigureFactory<Record<string, any>>> = {};
+
     /**
      * 生成的配置
      */
     protected config: Record<string, any> = {};
+
     /**
      * 环境变量操作实例
      */
     protected _env: Env;
-     /**
+
+    /**
      * 存储配置操作实例
      */
-     protected storage: Storage;
+    protected storage: Storage;
+
     /**
      * 初始化配置类
      * @param configs 配置构造器集合对象
@@ -58,18 +65,6 @@ export class Configure {
         }
         await this.sync();
         this.inited = true;
-        return this;
-    }
-
-     /**
-     * 手动存储一个配置
-     * @param key 配置名
-     * @param change 用于指定如果该配置已经存在在config.yml中时要不要更改
-     * @param append 如果为true,则如果已经存在的包含数组的配置,使用追加方式合并,否则直接替换
-     */
-     async store(key: string, change = false, append = false) {
-        if (!this.storage.enabled) throw new Error('Must enable storage at first!');
-        this.changeStorageValue(key, await this.get(key, null), change, append);
         return this;
     }
 
@@ -98,6 +93,33 @@ export class Configure {
         } else if (isFunction(register)) {
             this.factories[key] = { register };
         }
+        return this;
+    }
+
+    /**
+     * 删除配置项
+     * 如果不是存储配置则为临时删除,重启用户后该配置依然存在
+     * @param key
+     */
+    remove(key: string) {
+        if (has(this.storage.config, key) && this.storage.enabled) {
+            this.storage.remove(key);
+            this.config = deepMerge(this.config, this.storage.config, 'replace');
+        } else if (has(this.config, key)) {
+            this.config = omit(this.config, [key]);
+        }
+        return this;
+    }
+
+    /**
+     * 手动存储一个配置
+     * @param key 配置名
+     * @param change 用于指定如果该配置已经存在在config.yml中时要不要更改
+     * @param append 如果为true,则如果已经存在的包含数组的配置,使用追加方式合并,否则直接替换
+     */
+    async store(key: string, change = false, append = false) {
+        if (!this.storage.enabled) throw new Error('Must enable storage at first!');
+        this.changeStorageValue(key, await this.get(key, null), change, append);
         return this;
     }
 

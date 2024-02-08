@@ -1,8 +1,8 @@
-import { DynamicModule, Module } from "@nestjs/common";
-import type { MelliConfig } from "./types";
-import { MeilliService } from "./meilli.service";
-import { createMeilliOptions } from "./helpers";
+import { DynamicModule, Module } from '@nestjs/common';
 
+import { createMeilliOptions } from './helpers';
+import { MeilliService } from './meilli.service';
+import type { MelliConfig } from './types';
 
 @Module({})
 export class MeilliModule {
@@ -15,14 +15,14 @@ export class MeilliModule {
                     provide: MeilliService,
                     useFactory: async () => {
                         const service = new MeilliService(
-                            await createMeilliOptions(configRegister())
-                        )
+                            await createMeilliOptions(configRegister()),
+                        );
                         service.createClients();
                         return service;
-                    }
-                }
+                    },
+                },
             ],
             exports: [MeilliService],
-        }
+        };
     }
 }

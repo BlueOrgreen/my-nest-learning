@@ -1,7 +1,7 @@
+import { BaseRepository } from '@/modules/database/base';
 import { CustomRepository } from '@/modules/database/decorators';
 
 import { PostEntity, TagEntity } from '../entities';
-import { BaseRepository } from '@/modules/database/base';
 
 @CustomRepository(TagEntity)
 export class TagRepository extends BaseRepository<TagEntity> {

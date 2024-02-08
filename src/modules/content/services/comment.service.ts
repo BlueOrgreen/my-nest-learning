@@ -1,16 +1,21 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
-import { CommentRepository, PostRepository } from "../repositories";
-import { CreateCommentDto, QueryCommentDto, QueryCommentTreeDto } from "../dtos";
-import { isNil } from "lodash";
-import { EntityNotFoundError, In, SelectQueryBuilder } from "typeorm";
-import { CommentEntity } from "../entities";
-// import { treePaginate } from "@/modules/database/helpers";
-import { BaseService } from "@/modules/database/base";
+import { ForbiddenException, Injectable } from '@nestjs/common';
 
+import { isNil } from 'lodash';
+import { EntityNotFoundError, In, SelectQueryBuilder } from 'typeorm';
+
+// import { treePaginate } from "@/modules/database/helpers";
+import { BaseService } from '@/modules/database/base';
+
+import { CreateCommentDto, QueryCommentDto, QueryCommentTreeDto } from '../dtos';
+import { CommentEntity } from '../entities';
+import { CommentRepository, PostRepository } from '../repositories';
 
 @Injectable()
-export class CommentService extends BaseService<CommentEntity, CommentRepository>{
-    constructor(protected repository: CommentRepository, protected postRepository: PostRepository) {
+export class CommentService extends BaseService<CommentEntity, CommentRepository> {
+    constructor(
+        protected repository: CommentRepository,
+        protected postRepository: PostRepository,
+    ) {
         super(repository);
     }
 
@@ -87,7 +92,6 @@ export class CommentService extends BaseService<CommentEntity, CommentRepository
         const comments = await this.repository.find({ where: { id: In(ids) } });
         return this.repository.remove(comments);
     }
-    
 
     /**
      * 获取请求传入的父分类

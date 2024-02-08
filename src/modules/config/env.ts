@@ -1,8 +1,10 @@
-import { isFunction, isNil } from "lodash";
-import { EnvironmentType } from "./constants";
-import findUp from 'find-up';
-import { parse } from 'dotenv';
 import { readFileSync } from 'fs';
+
+import { parse } from 'dotenv';
+import findUp from 'find-up';
+import { isFunction, isNil } from 'lodash';
+
+import { EnvironmentType } from './constants';
 
 export class Env {
     /**
@@ -28,9 +30,9 @@ export class Env {
         } else {
             search.push(findUp.sync([`.env.${this.run()}`]));
         }
-         // 过滤掉undefined,把找到的环境变量文件放入envFiles数组
-         const envFiles = search.filter((file) => file !== undefined)
-         // 转义每个环境变量文件中的内容为一个对象并让前者覆盖合并后者
+        // 过滤掉undefined,把找到的环境变量文件放入envFiles数组
+        const envFiles = search.filter((file) => file !== undefined);
+        // 转义每个环境变量文件中的内容为一个对象并让前者覆盖合并后者
         // 如.env.{环境变量文件}会覆盖合并.env
         // 然后,得到所有文件中配置的环境变量对象
         const fileEnvs = envFiles
@@ -44,7 +46,7 @@ export class Env {
             );
         // 文件环境变量与系统环境变量合并
         const envs = { ...process.env, ...fileEnvs };
-         // 过滤出在envs中存在而在process.env中不存在的键
+        // 过滤出在envs中存在而在process.env中不存在的键
         const keys = Object.keys(envs).filter((key) => !(key in process.env));
         // 把.env*中存在而系统环境变量中不存在的键值对追加到process.env中
         // 这样就可以得到最终环境变量 process.env
@@ -53,17 +55,17 @@ export class Env {
         });
     }
 
-     /**
+    /**
      * 当前运行环境,如果production, development等
      */
     run() {
         return process.env.NODE_ENV as EnvironmentType & RecordAny;
     }
 
-     /**
+    /**
      * 是否在生产环境运行
      */
-     isProd() {
+    isProd() {
         return this.run() === EnvironmentType.PRODUCTION || this.run() === EnvironmentType.PROD;
     }
 
@@ -98,7 +100,7 @@ export class Env {
      * @param defaultValue 默认值
      */
     get<T extends BaseType = string>(key: string, defaultValue: T): T;
-    
+
     /**
      * 获取类型转义后的环境变量,不存在则获取默认值
      * @param key
@@ -130,5 +132,4 @@ export class Env {
         }
         return defaultValue! as T;
     }
-
 }

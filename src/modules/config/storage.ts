@@ -1,26 +1,27 @@
-import YAML from 'yaml';
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
+
 import { ensureFileSync } from 'fs-extra';
 import { has, isNil, omit, set } from 'lodash';
+import YAML from 'yaml';
 
 export class Storage {
-     /**
+    /**
      * 是否开启存储配置功能
      */
-     protected _enabled = false;
+    protected _enabled = false;
 
-     /**
+    /**
      * yaml文件配置路径
      */
     protected _path = resolve(__dirname, '../../..', 'config.yml');
 
-     /**
+    /**
      * 存储在yaml中的配置对象
      */
-     protected _config: Record<string, any> = {};
+    protected _config: Record<string, any> = {};
 
-     get enabled() {
+    get enabled() {
         return this._enabled;
     }
 
@@ -55,7 +56,7 @@ export class Storage {
     set<T>(key: string, value: T) {
         ensureFileSync(this.path);
         set(this._config, key, value);
-        writeFileSync(this.path, JSON.stringify(this.path, null, 4));
+        writeFileSync(this.path, YAML.stringify(this._config, null, 4));
     }
 
     /**
@@ -65,6 +66,6 @@ export class Storage {
     remove(key: string) {
         this._config = omit(this._config, [key]);
         if (has(this._config, key)) omit(this._config, [key]);
-        writeFileSync(this.path, JSON.stringify(this._config, null, 4));
+        writeFileSync(this.path, YAML.stringify(this._config, null, 4));
     }
 }

@@ -1,4 +1,3 @@
-
 import { Config } from 'meilisearch';
 
 // MelliSearch模块的配置

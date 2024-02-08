@@ -1,8 +1,8 @@
-import { MelliConfig } from "./types";
+import { MelliConfig } from './types';
 
 // 辅助函数用于根据传入的配置生成最终提供给MeilliService的配置，主要目的是判断默认(default)节点
 export const createMeilliOptions = async (
-    config: MelliConfig
+    config: MelliConfig,
 ): Promise<MelliConfig | undefined> => {
     if (config.length <= 0) return config;
     let options: MelliConfig = [...config];
@@ -15,4 +15,4 @@ export const createMeilliOptions = async (
         );
     }
     return options;
-}
+};

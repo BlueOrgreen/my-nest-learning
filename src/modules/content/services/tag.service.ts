@@ -1,15 +1,17 @@
-import { Injectable } from "@nestjs/common";
-import { TagRepository } from "../repositories";
-import { CreateTagDto, UpdateTagDto } from "../dtos/tag.dto";
+import { Injectable } from '@nestjs/common';
+
+import { omit } from 'lodash';
+
+import { BaseService } from '@/modules/database/base';
+
+import { CreateTagDto, UpdateTagDto } from '../dtos/tag.dto';
 // import { paginate } from "@/modules/database/helpers";
-import { omit } from "lodash";
 // import { SelectQueryBuilder } from "typeorm";
 // import { SelectTrashMode } from "@/modules/database/constants";
 // import { QueryHook } from "@/modules/database/types";
-import { TagEntity } from "../entities";
-import { BaseService } from "@/modules/database/base";
+import { TagEntity } from '../entities';
 
-
+import { TagRepository } from '../repositories';
 
 @Injectable()
 export class TagService extends BaseService<TagEntity, TagRepository> {
@@ -58,7 +60,7 @@ export class TagService extends BaseService<TagEntity, TagRepository> {
         return this.detail(data.id);
     }
 
-     /**
+    /**
      * 删除Tag
      * @param ids[]
      */
@@ -79,7 +81,7 @@ export class TagService extends BaseService<TagEntity, TagRepository> {
     // }
 
     /**
-     * 恢复Tag  
+     * 恢复Tag
      * @param ids[]
      */
     // async restore(ids: string[]) {

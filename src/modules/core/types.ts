@@ -1,6 +1,7 @@
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { Configure } from '../config/configure';
 import { ModuleMetadata, Type, PipeTransform } from '@nestjs/common';
+import { NestFastifyApplication } from '@nestjs/platform-fastify';
+
+import { Configure } from '../config/configure';
 import { ConfigStorageOption, ConfigureFactory } from '../config/types';
 
 export type App = {
@@ -29,10 +30,10 @@ export interface CreateOptions {
      * 应用构建器
      */
     builder: ContainerBuilder;
-     /**
+    /**
      * 全局配置
      */
-     globals?: {
+    globals?: {
         /**
          * 全局管道,默认为AppPipe,设置为null则不添加
          * @param params
@@ -47,6 +48,7 @@ export interface CreateOptions {
          */
         filter?: Type<any> | null;
     };
+    providers?: ModuleMetadata['providers'];
     /**
      * 配置选项
      */
@@ -60,4 +62,42 @@ export interface CreateOptions {
          */
         storage: ConfigStorageOption;
     };
+}
+
+/**
+ * 应用配置
+ */
+export interface AppConfig {
+    /**
+     * App名称
+     */
+    name: string;
+    /**
+     * 主机地址,默认为127.0.0.1
+     */
+    host: string;
+    /**
+     * 监听端口,默认3100
+     */
+    port: number;
+    /**
+     * 是否开启https,默认false
+     */
+    https: boolean;
+    /**
+     * 语言,默认zh-cn
+     */
+    locale: string;
+    /**
+     * 备用语言
+     */
+    fallbackLocale: string;
+    /**
+     * 控制台打印的url,默认自动生成
+     */
+    url?: string;
+    /**
+     * 由url+api前缀生成的基础api url
+     */
+    prefix?: string;
 }

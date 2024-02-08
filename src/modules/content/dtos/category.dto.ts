@@ -1,7 +1,5 @@
-import { PaginateOptions } from "@/modules/database/types";
-import { Transform } from 'class-transformer';
 import { PartialType } from '@nestjs/swagger';
-import { toNumber } from 'lodash';
+import { Transform } from 'class-transformer';
 import {
     IsDefined,
     IsEnum,
@@ -14,8 +12,11 @@ import {
     Min,
     ValidateIf,
 } from 'class-validator';
-import { DtoValidation } from "@/modules/core/decorators";
-import { SelectTrashMode } from "@/modules/database/constants";
+import { toNumber } from 'lodash';
+
+import { DtoValidation } from '@/modules/core/decorators';
+import { SelectTrashMode } from '@/modules/database/constants';
+import { PaginateOptions } from '@/modules/database/types';
 
 /**
  * 树形分类查询验证
@@ -80,4 +81,3 @@ export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
     @IsDefined({ groups: ['update'], message: 'ID必须指定' })
     id: string;
 }
-

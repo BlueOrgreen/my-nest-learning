@@ -1,10 +1,20 @@
-import { SelectTrashMode } from "@/modules/database/constants";
-import { PaginateOptions } from "@/modules/database/types";
-import { PartialType } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
-import { IsDefined, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsUUID, MaxLength, Min } from "class-validator";
-import { toNumber } from "lodash";
+import { PartialType } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import {
+    IsDefined,
+    IsEnum,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsUUID,
+    MaxLength,
+    Min,
+} from 'class-validator';
+import { toNumber } from 'lodash';
+
 import { DtoValidation } from '@/modules/core/decorators';
+import { SelectTrashMode } from '@/modules/database/constants';
+import { PaginateOptions } from '@/modules/database/types';
 
 @DtoValidation({ type: 'query' })
 export class QueryTagDto implements PaginateOptions {

@@ -12,10 +12,16 @@ import {
     ValidationPipe,
     SerializeOptions,
 } from '@nestjs/common';
-import { CategoryService } from '../services';
-import { CreateCategoryDto, QueryCategoryDto, QueryCategoryTreeDto, UpdateCategoryDto } from '../dtos';
+
 import { DeleteWithTrashDto, RestoreDto } from '@/modules/restful/dtos';
 
+import {
+    CreateCategoryDto,
+    QueryCategoryDto,
+    QueryCategoryTreeDto,
+    UpdateCategoryDto,
+} from '../dtos';
+import { CategoryService } from '../services';
 
 // @UseInterceptors(AppIntercepter)
 @Controller('categories')
@@ -94,7 +100,7 @@ export class CategoryController {
     @SerializeOptions({ groups: ['category-detail'] })
     async delete(
         @Body()
-            data: DeleteWithTrashDto
+        data: DeleteWithTrashDto,
     ) {
         const { ids, trash } = data;
         return this.service.delete(ids, trash);
@@ -110,7 +116,3 @@ export class CategoryController {
         return this.service.restore(ids);
     }
 }
-
-
-
-

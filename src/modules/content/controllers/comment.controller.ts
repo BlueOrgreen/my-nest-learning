@@ -13,10 +13,11 @@ import {
     ValidationPipe,
     SerializeOptions,
 } from '@nestjs/common';
-import { CommentService } from '../services';
-import { CreateCommentDto, QueryCommentDto } from '../dtos';
+
 import { DeleteDto } from '@/modules/restful/dtos';
 
+import { CreateCommentDto, QueryCommentDto } from '../dtos';
+import { CommentService } from '../services';
 
 // @UseInterceptors(AppIntercepter)
 @Controller('comments')

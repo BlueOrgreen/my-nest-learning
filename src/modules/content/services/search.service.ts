@@ -1,11 +1,14 @@
-import { MeilliService } from "@/modules/meilisearch/meilli.service";
-import { ForbiddenException, Injectable } from "@nestjs/common";
-import MeiliSearch from "meilisearch";
-import { CategoryRespository, CommentRepository } from "../repositories";
-import { isNil, pick, omit } from "lodash";
-import { SelectTrashMode } from "@/modules/database/constants";
-import { PostEntity } from "../entities";
-import { instanceToPlain } from "class-transformer";
+import { ForbiddenException, Injectable } from '@nestjs/common';
+
+import { instanceToPlain } from 'class-transformer';
+import { isNil, pick, omit } from 'lodash';
+import MeiliSearch from 'meilisearch';
+
+import { SelectTrashMode } from '@/modules/database/constants';
+import { MeilliService } from '@/modules/meilisearch/meilli.service';
+
+import { PostEntity } from '../entities';
+import { CategoryRespository, CommentRepository } from '../repositories';
 
 interface SearchOption {
     trashed?: SelectTrashMode;
@@ -17,19 +20,19 @@ interface SearchOption {
 async function getPostData(
     catRepo: CategoryRespository,
     cmtRepo: CommentRepository,
-    post: PostEntity
+    post: PostEntity,
 ) {
     const categories = [
         ...(await catRepo.findAncestors(post.category)).map((item) => ({
             id: item.id,
-            name: item.name
+            name: item.name,
         })),
         { id: post.category.id, name: post.category.name },
     ];
     const comments = (
         await cmtRepo.find({
             relations: ['post'],
-            where: { post: { id: post.id } }
+            where: { post: { id: post.id } },
         })
     ).map((item) => ({ id: item.id, body: item.body }));
 
@@ -49,8 +52,8 @@ async function getPostData(
             categories,
             tags: post.tags.map((item) => ({ id: item.id, name: item.name })),
             comments,
-        }
-    ]
+        },
+    ];
 }
 
 @Injectable()
@@ -82,11 +85,11 @@ export class SearchService {
         let filter = ['deletedAt IS NULL'];
         if (option.trashed === SelectTrashMode.ALL) {
             filter = [];
-        }  else if (option.trashed === SelectTrashMode.ONLY) {
+        } else if (option.trashed === SelectTrashMode.ONLY) {
             filter = ['deletedAt IS NOT NULL'];
         }
         if (!isNil(option.isPublished)) {
-            filter.push(option.isPublished ? 'publishedAt IS NOT NULL' : 'deletedAt IS NULL')
+            filter.push(option.isPublished ? 'publishedAt IS NOT NULL' : 'deletedAt IS NULL');
         }
         const result = await this.client.index(this.index).search(text, {
             page,
@@ -116,10 +119,10 @@ export class SearchService {
             .updateDocuments(
                 await Promise.all(
                     posts.map((post) =>
-                        getPostData(this.categoryRepository, this.commentRepository, post)
-                    )
-                )
-            )
+                        getPostData(this.categoryRepository, this.commentRepository, post),
+                    ),
+                ),
+            );
     }
 
     async delete(ids: string[]) {

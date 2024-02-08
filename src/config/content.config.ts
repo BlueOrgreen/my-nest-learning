@@ -1,6 +1,6 @@
-import { ContentConfig } from "@/modules/content/types";
+import { createContentConfig } from '@/modules/content/types';
 
-export const content = (): ContentConfig => ({
-    searchType: 'against',
-    // searchType: 'like',
-});
+export const content = createContentConfig(() => ({
+    searchType: 'meilli',
+    htmlEnabled: false,
+}));

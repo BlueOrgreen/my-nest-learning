@@ -1,6 +1,5 @@
 import { Configure } from './configure';
 
-
 /**
  * 存储配置选项
  */
@@ -32,7 +31,7 @@ export interface ConfigureFactory<
     /**
      * 配置注册器
      */
-    register: ConfigureRegister<RePartial<T>>
+    register: ConfigureRegister<RePartial<T>>;
     /**
      * 默认配置注册器
      */
@@ -61,5 +60,3 @@ export type ConnectionOption<T extends Record<string, any>> = { name?: string } 
  * 多连接连接型配置生成的结果
  */
 export type ConnectionRst<T extends Record<string, any>> = Array<{ name: string } & T>;
-
-

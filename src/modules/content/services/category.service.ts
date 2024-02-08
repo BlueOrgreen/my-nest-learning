@@ -1,13 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
+import { isNil, omit } from 'lodash';
 import { EntityNotFoundError, In } from 'typeorm';
-import { CategoryRespository } from "../repositories";
-import { CreateCategoryDto, QueryCategoryDto, UpdateCategoryDto, QueryCategoryTreeDto } from "../dtos/category.dto";
-import { treePaginate } from "@/modules/database/helpers";
-import { CategoryEntity } from "../entities";
-import { isNil, omit } from "lodash";
-import { SelectTrashMode } from "@/modules/database/constants";
-import { BaseService } from "@/modules/database/base";
 
+import { BaseService } from '@/modules/database/base';
+import { SelectTrashMode } from '@/modules/database/constants';
+import { treePaginate } from '@/modules/database/helpers';
+
+import {
+    CreateCategoryDto,
+    QueryCategoryDto,
+    UpdateCategoryDto,
+    QueryCategoryTreeDto,
+} from '../dtos/category.dto';
+import { CategoryEntity } from '../entities';
+import { CategoryRespository } from '../repositories';
 
 @Injectable()
 export class CategoryService extends BaseService<CategoryEntity, CategoryRespository> {
@@ -152,5 +158,4 @@ export class CategoryService extends BaseService<CategoryEntity, CategoryResposi
         }
         return parent;
     }
-    
 }

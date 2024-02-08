@@ -30,7 +30,6 @@
     "@nestjs/swagger": "^7.1.12",
     "@nestjs/typeorm": "^10.0.0",
     "@sqltools/formatter": "^1.2.5",
-    "bun": "^1.0.6",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "class-transformer": "^0.5.1",
@@ -72,7 +71,7 @@
     "@typescript-eslint/parser": "^6.7.3",
     "bun-types": "^1.0.6",
     "cross-env": "^7.0.3",
-    "eslint": "^8.50.0",
+    "eslint": "^8.52.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-config-prettier": "^9.0.0",
@@ -106,5 +105,19 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "pnpm": {
+    "updateConfig": {
+      "ignoreDependencies": [
+        "find-up",
+        "chalk",
+        "ora"
+      ]
+    },
+    "peerDependencyRules": {
+      "allowAny": [
+        "reflect-metadata"
+      ]
+    }
   }
 }

@@ -12,9 +12,11 @@ import {
     ValidationPipe,
     SerializeOptions,
 } from '@nestjs/common';
-import { TagService } from '../services';
-import { CreateTagDto, QueryTagDto, UpdateTagDto } from '../dtos';
+
 import { DeleteWithTrashDto, RestoreDto } from '@/modules/restful/dtos';
+
+import { CreateTagDto, QueryTagDto, UpdateTagDto } from '../dtos';
+import { TagService } from '../services';
 
 // @UseInterceptors(AppIntercepter)
 @Controller('tags')
@@ -79,7 +81,7 @@ export class TagController {
     @SerializeOptions({ groups: ['tag-list'] })
     async delete(
         @Body()
-        data: DeleteWithTrashDto
+        data: DeleteWithTrashDto,
     ) {
         const { ids, trash } = data;
         return this.service.delete(ids, trash);
@@ -89,7 +91,7 @@ export class TagController {
     @SerializeOptions({ groups: ['tag-list'] })
     async restore(
         @Body()
-        data: RestoreDto
+        data: RestoreDto,
     ) {
         const { ids } = data;
         return this.service.restore(ids);

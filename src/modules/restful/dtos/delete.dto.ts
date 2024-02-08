@@ -1,5 +1,6 @@
-import { DtoValidation } from "@/modules/core/decorators";
-import { IsDefined, IsUUID } from "class-validator";
+import { IsDefined, IsUUID } from 'class-validator';
+
+import { DtoValidation } from '@/modules/core/decorators';
 
 // 验证批量删除请求数据的DTO
 @DtoValidation()

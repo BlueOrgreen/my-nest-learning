@@ -1,8 +1,20 @@
 // src/modules/content/entities/category.entity.ts
-import { BaseEntity, Column, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, Tree, TreeChildren, TreeParent, Index } from 'typeorm';
-import type { Relation } from 'typeorm';
-import { PostEntity } from './post.entity';
 import { Exclude, Expose, Type } from 'class-transformer';
+import {
+    BaseEntity,
+    Column,
+    DeleteDateColumn,
+    Entity,
+    OneToMany,
+    PrimaryColumn,
+    Tree,
+    TreeChildren,
+    TreeParent,
+    Index,
+} from 'typeorm';
+import type { Relation } from 'typeorm';
+
+import { PostEntity } from './post.entity';
 
 @Exclude()
 @Tree('materialized-path')
@@ -23,12 +35,12 @@ export class CategoryEntity extends BaseEntity {
 
     @Expose({ groups: ['category-list'] })
     depth = 0;
-    
+
     @Expose({ groups: ['category-detail', 'category-list'] })
     @Type(() => CategoryEntity)
     @TreeParent({ onDelete: 'NO ACTION' })
     parent: Relation<CategoryEntity> | null;
-    
+
     @Expose({ groups: ['category-tree'] })
     @Type(() => CategoryEntity)
     @TreeChildren({ cascade: true })

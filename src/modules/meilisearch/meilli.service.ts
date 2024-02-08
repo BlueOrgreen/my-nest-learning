@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import type { MelliConfig } from "./types";
-import MeiliSearch from "meilisearch";
-import { isNil } from "lodash";
+import { Injectable } from '@nestjs/common';
 
+import { isNil } from 'lodash';
+import MeiliSearch from 'meilisearch';
+
+import type { MelliConfig } from './types';
 
 @Injectable()
 export class MeilliService {
@@ -26,8 +27,8 @@ export class MeilliService {
      */
     async createClients() {
         this.options.forEach(async (o) => {
-            this.clients.set(o.name, new MeiliSearch(o))
-        })
+            this.clients.set(o.name, new MeiliSearch(o));
+        });
     }
 
     /**

@@ -1,7 +1,8 @@
-import { CustomRepository } from '@/modules/database/decorators';
-import { PostEntity } from '../entities/post.entity';
-import { CommentEntity } from '../entities';
 import { BaseRepository } from '@/modules/database/base';
+import { CustomRepository } from '@/modules/database/decorators';
+
+import { CommentEntity } from '../entities';
+import { PostEntity } from '../entities/post.entity';
 
 @CustomRepository(PostEntity)
 export class PostRepository extends BaseRepository<PostEntity> {
@@ -22,6 +23,6 @@ export class PostRepository extends BaseRepository<PostEntity> {
                     .from(CommentEntity, 'c')
                     .where(`c.post.id = ${this.qbName}.id`);
             }, 'commentCount')
-            .loadRelationCountAndMap(`${this.qbName}.commentCount`, `${this.qbName}.comments`);;
-        }
+            .loadRelationCountAndMap(`${this.qbName}.commentCount`, `${this.qbName}.comments`);
+    }
 }
