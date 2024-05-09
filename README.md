@@ -84,3 +84,9 @@ git branch -d xxx
 ```bash
 git checkout -b xxx origin/xxx 
 ```
+
+**根据当前分支 创建新分支**
+```bash
+git checkout -b xxx
+```
+
