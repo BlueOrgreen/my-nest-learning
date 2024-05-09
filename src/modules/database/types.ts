@@ -129,7 +129,7 @@ export type DbConfig = {
  */
 export type DbOptions = Record<string, any> & {
     common: Record<string, any>;
-    connections: TypeormOption;
+    connections: TypeormOption[];
 };
 
 /**

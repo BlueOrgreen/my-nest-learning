@@ -9,6 +9,7 @@ import { EnvironmentType } from './constants';
 export class Env {
     /**
      * 加载环境变量
+     * load用于读取所有环境变量并合并到proccess.env中
      */
     async load() {
         /**

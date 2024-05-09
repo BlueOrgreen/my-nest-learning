@@ -1,6 +1,10 @@
 import { ModuleMetadata, Type, PipeTransform } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 
+import chalk from 'chalk';
+
+import { isNil } from 'lodash';
+
 import { Configure } from '../config/configure';
 import { ConfigStorageOption, ConfigureFactory } from '../config/types';
 
@@ -100,4 +104,37 @@ export interface AppConfig {
      * 由url+api前缀生成的基础api url
      */
     prefix?: string;
+}
+
+/**
+ * 控制台错误函数panic的选项参数
+ */
+export interface PanicOption {
+    /**
+     * 报错消息
+     */
+    message: string;
+    /**
+     * 抛出的异常信息
+     */
+    error?: any;
+    /**
+     * 是否退出进程
+     */
+    exit?: boolean;
+}
+
+/**
+ * 输出命令行错误消息
+ * @param option
+ */
+export async function panic(option: PanicOption | string) {
+    console.log();
+    if (typeof option === 'string') {
+        console.log(chalk.red(`\n❌ ${option}`));
+        process.exit(1);
+    }
+    const { error, message, exit = true } = option;
+    !isNil(error) ? console.log(chalk.red(error)) : console.log(chalk.red(`\n❌ ${message}`));
+    if (exit) process.exit(1);
 }

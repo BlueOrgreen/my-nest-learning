@@ -5,6 +5,10 @@ import { ensureFileSync } from 'fs-extra';
 import { has, isNil, omit, set } from 'lodash';
 import YAML from 'yaml';
 
+/**
+ * 文件操作的 Storage 用于将 需要长期存储的配置存储到一个文件里
+ * 一部分配置不需要通过数据库存取修改，提高应用配置
+ */
 export class Storage {
     /**
      * 是否开启存储配置功能

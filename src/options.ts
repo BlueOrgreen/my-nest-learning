@@ -11,11 +11,14 @@ import { MeilliModule } from './modules/meilisearch/melli.module';
 
 export const createOptions: CreateOptions = {
     config: { factories: configs as any, storage: { enabled: true } },
-    modules: async (configure) => [
-        DatabaseModule.forRoot(configure),
-        MeilliModule.forRoot(configure),
-        ContentModule.forRoot(configure),
-    ],
+    modules: async (configure) => {
+        console.log('configure===>', configure);
+        return [
+            DatabaseModule.forRoot(configure),
+            MeilliModule.forRoot(configure),
+            ContentModule.forRoot(configure),
+        ];
+    },
     globals: {},
     builder: async ({ configure, BootModule }) => {
         const container = await NestFactory.create<NestFastifyApplication>(

@@ -1,10 +1,11 @@
 key:
-  child-key: value1
-  child-key2: {
-    objKey1: "obj1-val",
-    objKey2: "obj2-val"
-  }
+    child-key: value1
+    child-key2:
+        objKey1: obj1-val
+        objKey2: obj2-val
 key2:
-  - Chen
-  - 1
-  - true
+    - Chen
+    - 1
+    - true
+app:
+    name: spySqwSDd

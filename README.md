@@ -72,3 +72,15 @@ pnpm cli dbs -i
     "bearerToken": "xxx"
 }
 ```
+
+### git
+
+**删除本地分支**
+```bash
+git branch -d xxx
+```
+
+**拉取本地不存在的远程分支并切换**
+```bash
+git checkout -b xxx origin/xxx 
+```

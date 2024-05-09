@@ -56,8 +56,8 @@ export const deepMerge = <T1, T2>(
 
 /**
  * 手动动态创建一个模块
- * @param target
- * @param metaSetter
+ * @param target 是构建的模块类名，可以是一个字符串也可以是一个类
+ * @param metaSetter 函数执行后获得传入 @Module 装饰器元数据（如providers等）
  */
 export function CreateModule(
     target: string | Type<any>,
