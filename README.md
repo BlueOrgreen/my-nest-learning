@@ -36,7 +36,7 @@ nest的代码组织是以`Module`为单位的, 使用多个模块来组织代码
 - main 分支为主分支 沿着课程往下学
 - content 分支为内容分支 主要整合了 controller、service、entity、respository content 没有整合数据代码抽象化
 - abstract 整合了数据代码抽象化的CRUD框架
-
+- configure 整合了自建配置系统的分支
 
 ### 数据的验证和序列化
 
