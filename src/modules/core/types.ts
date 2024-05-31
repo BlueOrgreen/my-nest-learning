@@ -5,6 +5,8 @@ import chalk from 'chalk';
 
 import { isNil } from 'lodash';
 
+import { CommandModule } from 'yargs';
+
 import { Configure } from '../config/configure';
 import { ConfigStorageOption, ConfigureFactory } from '../config/types';
 
@@ -13,6 +15,10 @@ export type App = {
     container?: NestFastifyApplication;
     // 配置类实例
     configure: Configure;
+    /**
+     * 命令列表
+     */
+    commands: CommandModule<RecordAny, RecordAny>[];
 };
 
 /**
@@ -66,6 +72,7 @@ export interface CreateOptions {
          */
         storage: ConfigStorageOption;
     };
+    commands: () => CommandCollection;
 }
 
 /**
@@ -138,3 +145,18 @@ export async function panic(option: PanicOption | string) {
     !isNil(error) ? console.log(chalk.red(error)) : console.log(chalk.red(`\n❌ ${message}`));
     if (exit) process.exit(1);
 }
+
+// 因为在命令中需要启动一个nestjs实例，对于一些即时运行的命令，比如数据迁移等，
+// 需要在运行后退出进程。否则，虽然就算实例关闭了，命令窗口还会卡在那边，因为进程没有结束掉
+export interface CommandOption<T extends RecordAny, U = RecordAny> extends CommandModule<T, U> {
+    /**
+     * 是否执行后即退出进程的瞬时应用
+     */
+    instant?: boolean;
+}
+
+export type CommandItem<T = Record<string, any>, U = Record<string, any>> = (
+    app: Required<App>,
+) => Promise<CommandOption<T, U>>;
+
+export type CommandCollection = Array<CommandItem>;

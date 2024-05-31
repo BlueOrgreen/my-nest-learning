@@ -13,8 +13,12 @@ import {
     SerializeOptions,
 } from '@nestjs/common';
 
+import { ApiTags } from '@nestjs/swagger';
+
+import { Depends } from '@/modules/restful/decorators/depends.decorator';
 import { DeleteWithTrashDto, RestoreDto } from '@/modules/restful/dtos';
 
+import { ContentModule } from '../content.module';
 import {
     CreateCategoryDto,
     QueryCategoryDto,
@@ -24,6 +28,8 @@ import {
 import { CategoryService } from '../services';
 
 // @UseInterceptors(AppIntercepter)
+@ApiTags('分类操作')
+@Depends(ContentModule)
 @Controller('categories')
 export class CategoryController {
     constructor(protected service: CategoryService) {}

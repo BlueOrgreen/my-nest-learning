@@ -1,26 +1,29 @@
 import { BadGatewayException, Global, Module, ModuleMetadata, Type } from '@nestjs/common';
 
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import chalk from 'chalk';
 import { useContainer } from 'class-validator';
 
-import { isNil, omit } from 'lodash';
+import { omit } from 'lodash';
 
 import { ConfigModule } from '@/modules/config/config.module';
 import { Configure } from '@/modules/config/configure';
+
+import { echoApi } from '@/modules/restful/helpers';
 
 import { CoreModule } from '../core.module';
 
 import { AppFilter, AppIntercepter, AppPipe } from '../providers';
 import { App, AppConfig, CreateOptions } from '../types';
 
+import { createCommands } from './command';
+
 import { CreateModule } from '.';
 
 export const createApp = (options: CreateOptions) => async (): Promise<App> => {
     const { config, builder } = options;
     // 设置app的配置中心实例
-    const app: App = { configure: new Configure() };
+    const app: App = { configure: new Configure(), commands: [] };
     // 初始化配置实例
     await app.configure.initilize(config.factories, config.storage);
     // 如果没有app配置则使用默认配置
@@ -39,6 +42,7 @@ export const createApp = (options: CreateOptions) => async (): Promise<App> => {
     useContainer(app.container.select(BootModule), {
         fallbackOnErrors: true,
     });
+    app.commands = await createCommands(options.commands, app as Required<App>);
     return app;
 };
 
@@ -111,7 +115,7 @@ export async function createBootModule(
 /**
  * app实例常量
  */
-export const app: App = { configure: new Configure() };
+export const app: App = { configure: new Configure(), commands: [] };
 
 /**
  * 构建APP CLI,默认start命令应用启动监听app
@@ -131,19 +135,19 @@ export async function startApp(
 }
 
 // src/modules/core/helpers/app.ts
-/**
- * 输出API地址
- * @param factory
- */
-export async function echoApi(configure: Configure, container: NestFastifyApplication) {
-    const appUrl = await configure.get<string>('app.url');
-    // 设置应用的API前缀,如果没有则与appUrl相同
-    const urlPrefix = await configure.get('app.prefix', undefined);
-    const apiUrl = !isNil(urlPrefix)
-        ? `${appUrl}${urlPrefix.length > 0 ? `/${urlPrefix}` : urlPrefix}`
-        : appUrl;
-    console.log(`- RestAPI: ${chalk.green.underline(apiUrl)}`);
-}
+// /**
+//  * 输出API地址
+//  * @param factory
+//  */
+// export async function echoApi(configure: Configure, container: NestFastifyApplication) {
+//     const appUrl = await configure.get<string>('app.url');
+//     // 设置应用的API前缀,如果没有则与appUrl相同
+//     const urlPrefix = await configure.get('app.prefix', undefined);
+//     const apiUrl = !isNil(urlPrefix)
+//         ? `${appUrl}${urlPrefix.length > 0 ? `/${urlPrefix}` : urlPrefix}`
+//         : appUrl;
+//     console.log(`- RestAPI: ${chalk.green.underline(apiUrl)}`);
+// }
 
 /**
  * 启动信息打印

@@ -1,4 +1,4 @@
-import { get, has, isFunction, isNil, isObject, omit, set } from 'lodash';
+import { get, has, isArray, isFunction, isNil, isObject, omit, set } from 'lodash';
 
 import { isAsyncFn, deepMerge } from '../core/helpers';
 
@@ -183,7 +183,7 @@ export class Configure {
      */
     protected async syncFactory(key: string) {
         if (has(this.config, key) || !has(this.factories, key)) return this;
-        const { register, defaultRegister, storage, append } = this.factories[key];
+        const { register, defaultRegister, storage, hook, append } = this.factories[key];
         let defaultValue = {};
         let value = isAsyncFn(register) ? await register(this) : register(this);
         if (!isNil(defaultRegister)) {
@@ -191,6 +191,12 @@ export class Configure {
                 ? await defaultRegister(this)
                 : defaultRegister(this);
             value = deepMerge(defaultValue, value, 'replace');
+        }
+        if (!isNil(hook)) {
+            value = isAsyncFn(hook) ? await hook(this, value) : hook(this, value);
+        }
+        if (this.storage.enabled) {
+            value = deepMerge(value, get(this.storage.config, key, isArray(value) ? [] : {}));
         }
         this.set(key, value, storage && isNil(await this.get(key, null)), append);
         return this;

@@ -13,9 +13,9 @@ import {
 
 import { toNumber } from 'lodash';
 
-import { PaginateOptions } from '@/modules/database/types';
+import { PaginateDto } from '@/modules/restful/dtos/paginate.dto';
 
-export class QueryCommentDto implements PaginateOptions {
+export class QueryCommentDto extends PaginateDto {
     @IsUUID(undefined, { message: 'ID格式错误' })
     @IsOptional()
     post?: string;

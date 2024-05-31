@@ -14,12 +14,18 @@ import {
     SerializeOptions,
 } from '@nestjs/common';
 
+import { ApiTags } from '@nestjs/swagger';
+
+import { Depends } from '@/modules/restful/decorators/depends.decorator';
 import { DeleteDto } from '@/modules/restful/dtos';
 
+import { ContentModule } from '../content.module';
 import { CreateCommentDto, QueryCommentDto } from '../dtos';
 import { CommentService } from '../services';
 
 // @UseInterceptors(AppIntercepter)
+@ApiTags('评论操作')
+@Depends(ContentModule)
 @Controller('comments')
 export class CommentController {
     constructor(protected service: CommentService) {}

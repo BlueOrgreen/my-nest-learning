@@ -12,12 +12,18 @@ import {
     SerializeOptions,
 } from '@nestjs/common';
 
+import { ApiTags } from '@nestjs/swagger';
+
+import { Depends } from '@/modules/restful/decorators/depends.decorator';
 import { DeleteWithTrashDto, RestoreDto } from '@/modules/restful/dtos';
 
+import { ContentModule } from '../content.module';
 import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos/post.dto';
 import { PostService } from '../services/post.service';
 
 // @UseInterceptors(AppIntercepter)
+@ApiTags('文章操作')
+@Depends(ContentModule)
 @Controller('posts')
 export class PostController {
     constructor(protected service: PostService) {}

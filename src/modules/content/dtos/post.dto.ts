@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
 import {
@@ -20,7 +20,8 @@ import { isNil, toNumber } from 'lodash';
 import { DtoValidation } from '@/modules/core/decorators';
 import { toBoolean } from '@/modules/core/helpers';
 import { SelectTrashMode } from '@/modules/database/constants';
-import { PaginateOptions } from '@/modules/database/types';
+
+import { PaginateWithTrashedDto } from '@/modules/restful/dtos/paginate.dto';
 
 import { PostOrderType } from '../constants';
 
@@ -33,7 +34,7 @@ import { PostOrderType } from '../constants';
 class-transformer导出的Transform装饰器来定义转译函数
 */
 @DtoValidation({ type: 'query' })
-export class QueryPostDto implements PaginateOptions {
+export class QueryPostDto implements PaginateWithTrashedDto {
     @Transform(({ value }) => toBoolean(value))
     @IsBoolean()
     @IsOptional()
@@ -82,6 +83,7 @@ export class QueryPostDto implements PaginateOptions {
  */
 @DtoValidation({ groups: ['create'] })
 export class CreatePostDto {
+    @ApiProperty({ description: '文章标题', maxLength: 255 })
     @MaxLength(255, {
         always: true,
         message: '文章标题长度最大为$constraint1',
@@ -94,6 +96,10 @@ export class CreatePostDto {
     @IsOptional({ groups: ['update'] })
     body: string;
 
+    @ApiPropertyOptional({
+        description: '文章描述',
+        maxLength: 500,
+    })
     @MaxLength(500, {
         always: true,
         message: '文章描述长度最大为$constraint1',

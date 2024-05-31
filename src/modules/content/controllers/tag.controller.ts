@@ -13,12 +13,18 @@ import {
     SerializeOptions,
 } from '@nestjs/common';
 
+import { ApiTags } from '@nestjs/swagger';
+
+import { Depends } from '@/modules/restful/decorators/depends.decorator';
 import { DeleteWithTrashDto, RestoreDto } from '@/modules/restful/dtos';
 
+import { ContentModule } from '../content.module';
 import { CreateTagDto, QueryTagDto, UpdateTagDto } from '../dtos';
 import { TagService } from '../services';
 
 // @UseInterceptors(AppIntercepter)
+@ApiTags('标签操作')
+@Depends(ContentModule)
 @Controller('tags')
 export class TagController {
     constructor(protected service: TagService) {}
